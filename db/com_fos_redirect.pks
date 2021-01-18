@@ -1,5 +1,3 @@
-
-
 create or replace package com_fos_redirect
 as
 
@@ -17,7 +15,5 @@ as
 
 end;
 /
-
-
 
 

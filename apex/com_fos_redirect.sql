@@ -1,5 +1,3 @@
-
-
 prompt --application/set_environment
 set define off verify off feedback off
 whenever sqlerror exit sql.sqlcode rollback
@@ -36,13 +34,14 @@ prompt APPLICATION 102 - FOS Dev - Plugin Master
 --   Manifest
 --     PLUGIN: 61118001090994374
 --     PLUGIN: 134108205512926532
+--     PLUGIN: 547902228942303344
 --     PLUGIN: 168413046168897010
 --     PLUGIN: 13235263798301758
 --     PLUGIN: 37441962356114799
 --     PLUGIN: 1846579882179407086
 --     PLUGIN: 8354320589762683
 --     PLUGIN: 50031193176975232
---     PLUGIN: 34175298479606152
+--     PLUGIN: 106296184223956059
 --     PLUGIN: 35822631205839510
 --     PLUGIN: 2674568769566617
 --     PLUGIN: 14934236679644451
@@ -50,6 +49,7 @@ prompt APPLICATION 102 - FOS Dev - Plugin Master
 --     PLUGIN: 2657630155025963
 --     PLUGIN: 284978227819945411
 --     PLUGIN: 56714461465893111
+--     PLUGIN: 98648032013264649
 --   Manifest End
 --   Version:         19.2.0.00.18
 --   Instance ID:     250144500186934
@@ -228,7 +228,7 @@ wwv_flow_api.create_plugin(
 '<p>You have the ability to redirect to a static URL (with substitutions) or a URL that is returned from a PL/SQL Expression.</p>',
 '<p>Additionally you can submit page items and update their session state prior to the URL redirect and optionally execute some PL/SQL Code. The URL will be recomputed on the server when doing this. If you are using session state protection it will re'
 ||'turn the URL with updated checksums.</p>'))
-,p_version_identifier=>'20.1.1'
+,p_version_identifier=>'20.2.0'
 ,p_about_url=>'https://fos.world'
 ,p_plugin_comment=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '@fos-auto-return-to-page',
@@ -580,7 +580,5 @@ end;
 /
 set verify on feedback on define on
 prompt  ...done
-
-
 
 

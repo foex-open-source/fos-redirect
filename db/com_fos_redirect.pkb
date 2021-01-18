@@ -1,5 +1,3 @@
-
-
 create or replace package body com_fos_redirect
 as
 
@@ -152,7 +150,5 @@ end ajax;
 
 end;
 /
-
-
 
 

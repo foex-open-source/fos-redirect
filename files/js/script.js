@@ -1,5 +1,3 @@
-
-
 /* globals apex */
 
 var FOS = window.FOS || {};
@@ -86,7 +84,5 @@ FOS.utils.navigation = function (daContext, config) {
 	me[(config.itemsToSubmit || config.executePlsql) ? 'ajaxRedirect' : 'redirect'](config, daContext);
 
 };
-
-
 
 
