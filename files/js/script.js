@@ -38,6 +38,8 @@ FOS.utils.navigation = function (daContext, config) {
 			requestData.pageItems = config.itemsToSubmit
 		}
 
+		requestData.x01 = (daContext.triggeringElement) ? daContext.triggeringElement.id : ''; // thanks Alan Arentsen Jul-2021
+
 		//configures the showing and hiding of a possible spinner
 		if (spinnerSettings.showSpinner) {
 

@@ -6,16 +6,18 @@ as
 -- choice to prepare the URL
 --------------------------------------------------------------------------------
 function get_url
-( p_dynamic_action apex_plugin.t_dynamic_action
-) return varchar2
+  ( p_dynamic_action apex_plugin.t_dynamic_action
+  , p_triggering_element varchar2 default 'document'
+  ) return varchar2
 as
     l_url_source      p_dynamic_action.attribute_01%type := nvl(p_dynamic_action.attribute_01, 'static');
     l_url             p_dynamic_action.attribute_02%type := p_dynamic_action.attribute_02;
     l_plsql_expr      p_dynamic_action.attribute_03%type := p_dynamic_action.attribute_03;
-    l_prepare_url     BOOLEAN                            := nvl(p_dynamic_action.attribute_09, 'Y') = 'Y';
+    l_prepare_url     boolean                            := nvl(p_dynamic_action.attribute_09, 'Y') = 'Y';
 begin
 
-    if l_url_source = 'plsql-expression' then
+    if l_url_source = 'plsql-expression'
+    then
         l_url := apex_plugin_util.get_plsql_expression_result(l_plsql_expr);
     else
         l_url := apex_plugin_util.replace_substitutions(l_url);
@@ -24,25 +26,31 @@ begin
     -- We will replace again in the case that our plsql expression returned a url
     -- with substitutions or our static replacement returned a url with substitutions e.g. &HOME_LINK.
     --
-    if regexp_instr(l_url, '\&[^[:blank:]]*?\.') > 0 then
+    if regexp_instr(l_url, '\&[^[:blank:]]*?\.') > 0
+    then
         l_url := apex_plugin_util.replace_substitutions(l_url);
     end if;
 
-    if l_prepare_url then
-        l_url := apex_util.prepare_url(l_url, 'SESSION');
+    if l_prepare_url
+    then
+        l_url := apex_util.prepare_url
+                    ( p_url                => l_url
+                    , p_checksum_type      => 'SESSION'
+                    , p_triggering_element => p_triggering_element -- thanks Alan Arentsen Jul-2021
+                    );
     end if;
 
     return l_url;
 
-end;
+end get_url;
 
 --------------------------------------------------------------------------------
 -- Main plug-in render function
 --------------------------------------------------------------------------------
 function render
-    ( p_dynamic_action apex_plugin.t_dynamic_action
-    , p_plugin         apex_plugin.t_plugin
-    )
+  ( p_dynamic_action apex_plugin.t_dynamic_action
+  , p_plugin         apex_plugin.t_plugin
+  )
 return apex_plugin.t_dynamic_action_render_result
 as
     l_result apex_plugin.t_dynamic_action_render_result;
@@ -54,21 +62,21 @@ as
     l_exec_plsql           boolean                            := instr(p_dynamic_action.attribute_04, 'execute-plsql') > 0;
 
     -- spinner settings
-    l_show_spinner          boolean                           := nvl(p_dynamic_action.attribute_10, 'N') = 'Y';
+    l_show_spinner         boolean                            := nvl(p_dynamic_action.attribute_10, 'N') = 'Y';
 
     -- page items to submit settings
-    l_items_to_submit       varchar2(4000)                    := apex_plugin_util.page_item_names_to_jquery(p_dynamic_action.attribute_06);
+    l_items_to_submit      varchar2(4000)                     := apex_plugin_util.page_item_names_to_jquery(p_dynamic_action.attribute_06);
 
     -- Javascript Initialization Code
     l_init_js_fn           varchar2(32767)                    := nvl(apex_plugin_util.replace_substitutions(p_dynamic_action.init_javascript_code), 'undefined');
 
 begin
-
-    if apex_application.g_debug then
+    if apex_application.g_debug
+    then
         apex_plugin_util.debug_dynamic_action
-            ( p_dynamic_action => p_dynamic_action
-            , p_plugin         => p_plugin
-            );
+          ( p_dynamic_action => p_dynamic_action
+          , p_plugin         => p_plugin
+          );
     end if;
 
     -- create a json object holding the dynamic action settings
@@ -97,7 +105,7 @@ begin
 
     apex_json.free_output;
     return l_result;
-end;
+end render;
 
 --------------------------------------------------------------------------------
 -- called when region should be refreshed and returns the static content.
@@ -116,6 +124,9 @@ as
     l_context              p_dynamic_action.attribute_07%type := nvl(p_dynamic_action.attribute_07, 'window');
     l_new_window           boolean                            := nvl(p_dynamic_action.attribute_08,'N') = 'Y';
     l_item_names           apex_t_varchar2;
+
+    --ajax parameters
+    l_triggering_element   varchar2(32767) := nvl(apex_application.g_x01, 'document');
 
     -- resulting content
     l_content              clob                       := '';
@@ -140,7 +151,7 @@ begin
     -- return our JSON response with an updated URL
     apex_json.open_object;
     apex_json.write('status'   , 'success'                );
-    apex_json.write('url'      , get_url(p_dynamic_action));
+    apex_json.write('url'      , get_url(p_dynamic_action, l_triggering_element));
     apex_json.write('context'  , l_context                );
     apex_json.write('newWindow', l_new_window             );
     apex_json.close_object;
