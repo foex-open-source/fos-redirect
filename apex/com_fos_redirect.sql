@@ -36,10 +36,12 @@ prompt APPLICATION 102 - FOS Dev - Plugin Master
 --     PLUGIN: 134108205512926532
 --     PLUGIN: 1039471776506160903
 --     PLUGIN: 547902228942303344
+--     PLUGIN: 217651153971039957
 --     PLUGIN: 412155278231616931
---     PLUGIN: 1200087692794692554
+--     PLUGIN: 1389837954374630576
 --     PLUGIN: 461352325906078083
 --     PLUGIN: 13235263798301758
+--     PLUGIN: 216426771609128043
 --     PLUGIN: 37441962356114799
 --     PLUGIN: 1846579882179407086
 --     PLUGIN: 8354320589762683
@@ -47,6 +49,7 @@ prompt APPLICATION 102 - FOS Dev - Plugin Master
 --     PLUGIN: 106296184223956059
 --     PLUGIN: 35822631205839510
 --     PLUGIN: 2674568769566617
+--     PLUGIN: 183507938916453268
 --     PLUGIN: 14934236679644451
 --     PLUGIN: 2600618193722136
 --     PLUGIN: 2657630155025963
@@ -55,6 +58,7 @@ prompt APPLICATION 102 - FOS Dev - Plugin Master
 --     PLUGIN: 98648032013264649
 --     PLUGIN: 455014954654760331
 --     PLUGIN: 98504124924145200
+--     PLUGIN: 212503470416800524
 --   Manifest End
 --   Version:         19.2.0.00.18
 --   Instance ID:     250144500186934
@@ -146,7 +150,7 @@ wwv_flow_api.create_plugin(
 '    l_init_js_fn           varchar2(32767)                    := nvl(apex_plugin_util.replace_substitutions(p_dynamic_action.init_javascript_code), ''undefined'');',
 '    ',
 'begin',
-'    if apex_application.g_debug ',
+'    if apex_application.g_debug and substr(:DEBUG,6) >= 6 ',
 '    then',
 '        apex_plugin_util.debug_dynamic_action',
 '          ( p_dynamic_action => p_dynamic_action',
@@ -209,7 +213,7 @@ wwv_flow_api.create_plugin(
 '    l_return               apex_plugin.t_dynamic_action_ajax_result;',
 'begin',
 '    -- standard debugging intro, but only if necessary',
-'    if apex_application.g_debug',
+'    if apex_application.g_debug and substr(:DEBUG,6) >= 6',
 '    then',
 '        apex_plugin_util.debug_dynamic_action',
 '          ( p_plugin         => p_plugin',
@@ -244,7 +248,7 @@ wwv_flow_api.create_plugin(
 '<p>You have the ability to redirect to a static URL (with substitutions) or a URL that is returned from a PL/SQL Expression.</p>',
 '<p>Additionally you can submit page items and update their session state prior to the URL redirect and optionally execute some PL/SQL Code. The URL will be recomputed on the server when doing this. If you are using session state protection it will re'
 ||'turn the URL with updated checksums.</p>'))
-,p_version_identifier=>'21.1.0'
+,p_version_identifier=>'21.2.0'
 ,p_about_url=>'https://fos.world'
 ,p_plugin_comment=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '@fos-auto-return-to-page',
@@ -531,8 +535,8 @@ begin
 wwv_flow_api.g_varchar2_table := wwv_flow_api.empty_varchar2_table;
 wwv_flow_api.g_varchar2_table(1) := '76617220464F533D77696E646F772E464F537C7C7B7D3B464F532E7574696C733D77696E646F772E464F532E7574696C737C7C7B7D2C464F532E7574696C732E6E617669676174696F6E3D66756E6374696F6E28652C6E297B76617220693D746869733B';
 wwv_flow_api.g_varchar2_table(2) := '617065782E64656275672E696E666F2822464F53202D205265646972656374222C6E292C692E72656469726563743D66756E6374696F6E2865297B766172206E3D77696E646F775B652E636F6E746578745D3B21303D3D3D652E6E657757696E646F773F';
-wwv_flow_api.g_varchar2_table(3) := '6E2E617065782E6E617669676174696F6E2E6F70656E496E4E657757696E646F7728652E75726C293A6E2E617065782E6E617669676174696F6E2E726564697265637428652E75726C297D2C692E616A617852656469726563743D66756E6374696F6E28';
 
+wwv_flow_api.g_varchar2_table(3) := '6E2E617065782E6E617669676174696F6E2E6F70656E496E4E657757696E646F7728652E75726C293A6E2E617065782E6E617669676174696F6E2E726564697265637428652E75726C297D2C692E616A617852656469726563743D66756E6374696F6E28';
 wwv_flow_api.g_varchar2_table(4) := '652C6E297B76617220722C742C6F2C612C643D7B7D2C733D652E7370696E6E657253657474696E67733B652E6974656D73546F5375626D6974262628642E706167654974656D733D652E6974656D73546F5375626D6974292C642E7830313D6E2E747269';
 wwv_flow_api.g_varchar2_table(5) := '67676572696E67456C656D656E743F6E2E74726967676572696E67456C656D656E742E69643A22222C732E73686F775370696E6E6572262628732E7370696E6E6572456C656D656E743D732E73686F775370696E6E65724F6E526567696F6E3F6166456C';
 wwv_flow_api.g_varchar2_table(6) := '656D656E74733A22626F6479222C743D732E7370696E6E6572456C656D656E742C6F3D732E73686F775370696E6E65724F7665726C61792C613D22626F6479223D3D742C723D66756E6374696F6E2865297B766172206E2C693D617065782E7574696C2E';
