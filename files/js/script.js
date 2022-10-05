@@ -21,6 +21,11 @@ FOS.utils.navigation = function (daContext, config) {
 
 	me.redirect = function (config) {
 		var ctx = window[config.context];
+		// execute the triggering element expression
+		if ( config.triggeringElementExpr ){
+			let triggeringElement = config.triggeringElementExpr.call(daContext);
+			config.url = config.url.replace('#TRIGGERING_ELEMENT#', '\'' + triggeringElement + '\'');
+		}
 		if (config.newWindow === true) {
 			// Dialogs will never be opened in a new window right?
 			ctx.apex.navigation.openInNewWindow(config.url)
